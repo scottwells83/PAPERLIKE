@@ -5,6 +5,8 @@ using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
+using UglyToad.PdfPig;
+using UglyToad.PdfPig.Outline;
 
 namespace PaperwhiteReader;
 
@@ -20,9 +22,9 @@ public sealed class EpubLibrary
     public string BooksFolder { get; }
     private string IndexPath { get; }
 
-    public EpubLibrary()
+    public EpubLibrary(string? dataFolder = null)
     {
-        DataFolder = GetDataFolder();
+        DataFolder = dataFolder ?? GetDataFolder();
         BooksFolder = Path.Combine(DataFolder, "Books");
         IndexPath = Path.Combine(DataFolder, "library.json");
         Directory.CreateDirectory(BooksFolder);
@@ -36,6 +38,11 @@ public sealed class EpubLibrary
         index.Books = index.Books
             .Where(book => File.Exists(Path.Combine(BooksFolder, book.FileName)))
             .ToList();
+        foreach (var book in index.Books)
+        {
+            book.ChapterOffsets ??= [];
+            book.Bookmarks ??= [];
+        }
         if (index.Books.All(book => book.Id != index.SelectedBookId)) index.SelectedBookId = null;
         return index;
     }
@@ -82,10 +89,32 @@ public sealed class EpubLibrary
         index.Books.Add(entry);
         index.SelectedBookId = entry.Id;
         Save(index);
-        return (index, entry, parsed);
+        return (index, entry, parsed.IsPdf ? parsed with { Path = destination } : parsed);
     }
 
     public EpubBook Open(LibraryEntry entry) => Read(Path.Combine(BooksFolder, entry.FileName));
+
+    public void Remove(LibraryIndex index, LibraryEntry entry)
+    {
+        var source = Path.Combine(BooksFolder, entry.FileName);
+        var removedFolder = Path.Combine(DataFolder, "Removed Books");
+        Directory.CreateDirectory(removedFolder);
+        var destination = Path.Combine(removedFolder,
+            $"{Path.GetFileNameWithoutExtension(entry.FileName)}-{entry.Id[..8]}{Path.GetExtension(entry.FileName)}");
+        if (File.Exists(destination)) destination = Path.Combine(removedFolder, $"{entry.Id}-{entry.FileName}");
+        File.Move(source, destination);
+        try
+        {
+            index.Books.RemoveAll(book => book.Id == entry.Id);
+            if (index.SelectedBookId == entry.Id) index.SelectedBookId = null;
+            Save(index);
+        }
+        catch
+        {
+            File.Move(destination, source);
+            throw;
+        }
+    }
 
     public void Save(LibraryIndex index)
     {
@@ -105,7 +134,11 @@ public sealed class EpubLibrary
                 UseShellExecute = true
             });
         else if (OperatingSystem.IsMacOS())
-            System.Diagnostics.Process.Start("open", BooksFolder);
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo("/usr/bin/open")
+            {
+                ArgumentList = { "-a", "Finder", BooksFolder },
+                UseShellExecute = false
+            });
     }
 
     public static string GetDataFolder()
@@ -119,6 +152,7 @@ public sealed class EpubLibrary
 
     private static EpubBook Read(string path)
     {
+        if (path.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase)) return ReadPdf(path);
         using var archive = ZipFile.OpenRead(path);
         var container = ReadXml(archive, "META-INF/container.xml");
         var packagePath = container.Descendants().FirstOrDefault(element => element.Name.LocalName == "rootfile")?
@@ -167,6 +201,58 @@ public sealed class EpubLibrary
             string.IsNullOrWhiteSpace(title) ? Path.GetFileNameWithoutExtension(path) : title,
             string.IsNullOrWhiteSpace(author) ? "Unknown author" : author,
             chapters);
+    }
+
+    private static EpubBook ReadPdf(string path)
+    {
+        using var document = PdfDocument.Open(path);
+        var chapters = document.GetPages()
+            .Select((page, index) => new EpubChapter($"Page {index + 1}", page.Text ?? ""))
+            .ToList();
+        if (chapters.Count == 0) throw new InvalidDataException("This PDF has no pages.");
+        var sections = ReadPdfSections(document, chapters);
+        return new EpubBook(Path.GetFileNameWithoutExtension(path), "PDF document", chapters, true, path, sections);
+    }
+
+    private static IReadOnlyList<ReaderSection> ReadPdfSections(PdfDocument document, IReadOnlyList<EpubChapter> pages)
+    {
+        var sections = new List<ReaderSection>();
+        if (document.TryGetBookmarks(out var bookmarks) && bookmarks is not null)
+        {
+            void Visit(IEnumerable<BookmarkNode> nodes)
+            {
+                foreach (var node in nodes)
+                {
+                    if (node is DocumentBookmarkNode destination && destination.PageNumber >= 1 && destination.PageNumber <= pages.Count)
+                        sections.Add(new ReaderSection(node.Title, destination.PageNumber - 1));
+                    Visit(node.Children);
+                }
+            }
+            Visit(bookmarks.Roots);
+        }
+        if (sections.Count > 0) return sections.OrderBy(section => section.ChapterIndex).ToList();
+
+        // Some exported books contain printed chapter headings but no PDF outline.
+        foreach (var page in document.GetPages())
+        {
+            if (Regex.Matches(page.Text ?? "", @"\bChapter\s+\d+\b", RegexOptions.IgnoreCase).Count > 3) continue;
+            var topLines = page.GetWords()
+                .GroupBy(word => Math.Round(word.BoundingBox.Bottom / 3) * 3)
+                .OrderByDescending(line => line.Key)
+                .Take(3)
+                .Select(line => string.Join(" ", line.OrderBy(word => word.BoundingBox.Left).Select(word => word.Text)).Trim());
+            foreach (var line in topLines)
+            {
+                if (!Regex.IsMatch(line, @"^Chapter\s+\d+\b", RegexOptions.IgnoreCase)) continue;
+                sections.Add(new ReaderSection(line, page.Number - 1));
+                break;
+            }
+        }
+        return sections
+            .GroupBy(section => Regex.Match(section.Title, @"^Chapter\s+(\d+)", RegexOptions.IgnoreCase).Groups[1].Value)
+            .Select(group => group.OrderByDescending(section => section.ChapterIndex).First())
+            .OrderBy(section => section.ChapterIndex)
+            .ToList();
     }
 
     private static XDocument ReadXml(ZipArchive archive, string path)

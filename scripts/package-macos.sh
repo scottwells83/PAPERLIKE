@@ -48,7 +48,7 @@ cat > "$STAGE/Read Me.txt" <<'TXT'
 PaperLike for macOS
 
 Open “Install PaperLike.command” to install the app for your account.
-The app goes in ~/Applications. Your EPUB library and progress are saved in:
+The app goes in ~/Applications. Your EPUB/PDF library, bookmarks, and progress are saved in:
 ~/Library/Application Support/PaperLike/
 
 This early build is not signed or notarized. macOS may ask you to confirm that

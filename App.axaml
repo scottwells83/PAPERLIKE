@@ -4,30 +4,55 @@
              Name="PaperLike"
              RequestedThemeVariant="Light">
 
+    <Application.Resources>
+        <SolidColorBrush x:Key="WindowBrush" Color="#F6F4EE" />
+        <SolidColorBrush x:Key="SurfaceBrush" Color="#E3E0D9" />
+        <SolidColorBrush x:Key="PageBrush" Color="#F0E9D7" />
+        <SolidColorBrush x:Key="CardBrush" Color="#FFFFFF" />
+        <SolidColorBrush x:Key="SelectedBrush" Color="#EEE8D8" />
+        <SolidColorBrush x:Key="BorderBrush" Color="#DEDAD0" />
+        <SolidColorBrush x:Key="TextBrush" Color="#332F29" />
+        <SolidColorBrush x:Key="MutedBrush" Color="#777269" />
+        <SolidColorBrush x:Key="AccentBrush" Color="#74634E" />
+        <SolidColorBrush x:Key="AccentTextBrush" Color="#FFFFFF" />
+        <SolidColorBrush x:Key="ButtonBrush" Color="#EAE6DE" />
+        <SolidColorBrush x:Key="ButtonTextBrush" Color="#403B33" />
+    </Application.Resources>
+
     <Application.Styles>
         <FluentTheme />
         <Style Selector="Button">
-            <Setter Property="Foreground" Value="#403B33" />
-            <Setter Property="Background" Value="#EAE6DE" />
-            <Setter Property="BorderBrush" Value="#D5CFC3" />
+            <Setter Property="Foreground" Value="{DynamicResource ButtonTextBrush}" />
+            <Setter Property="Background" Value="{DynamicResource ButtonBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
             <Setter Property="CornerRadius" Value="6" />
             <Setter Property="Padding" Value="12,7" />
         </Style>
         <Style Selector="Button.primaryButton">
-            <Setter Property="Foreground" Value="#FFFFFF" />
-            <Setter Property="Background" Value="#74634E" />
-            <Setter Property="BorderBrush" Value="#74634E" />
+            <Setter Property="Foreground" Value="{DynamicResource AccentTextBrush}" />
+            <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
         </Style>
         <Style Selector="Button.addBookButton">
-            <Setter Property="Foreground" Value="#4D473D" />
-            <Setter Property="Background" Value="#EEEAE2" />
-            <Setter Property="BorderBrush" Value="#DEDAD0" />
+            <Setter Property="Foreground" Value="{DynamicResource ButtonTextBrush}" />
+            <Setter Property="Background" Value="{DynamicResource ButtonBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
             <Setter Property="HorizontalAlignment" Value="Stretch" />
         </Style>
         <Style Selector="ComboBox">
-            <Setter Property="Foreground" Value="#403B33" />
-            <Setter Property="Background" Value="#EAE6DE" />
-            <Setter Property="BorderBrush" Value="#D5CFC3" />
+            <Setter Property="Foreground" Value="{DynamicResource ButtonTextBrush}" />
+            <Setter Property="Background" Value="{DynamicResource ButtonBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
+        </Style>
+        <Style Selector="TextBox">
+            <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
+            <Setter Property="Background" Value="{DynamicResource CardBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
+        </Style>
+        <Style Selector="ListBox">
+            <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
+            <Setter Property="Background" Value="{DynamicResource CardBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
         </Style>
     </Application.Styles>
 </Application>

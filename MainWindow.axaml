@@ -1,115 +1,129 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="using:PaperwhiteReader"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="1120" d:DesignHeight="780"
         x:Class="PaperwhiteReader.MainWindow"
-        Title="PaperLike" Width="1120" Height="780"
-        MinWidth="820" MinHeight="620" Background="#F6F4EE">
-  <Grid RowDefinitions="68,*" ColumnDefinitions="220,*">
-    <Border Grid.Row="0" Grid.ColumnSpan="2" Background="#F6F4EE" BorderBrush="#DEDAD0" BorderThickness="0,0,0,1">
-      <Grid ColumnDefinitions="220,*,Auto">
+        Title="PaperLike" Width="1120" Height="780" MinWidth="820" MinHeight="620"
+        Background="{DynamicResource WindowBrush}">
+  <Grid RowDefinitions="68,*" ColumnDefinitions="240,*">
+    <Border Grid.Row="0" Grid.ColumnSpan="2" Background="{DynamicResource WindowBrush}"
+            BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,0,0,1">
+      <Grid ColumnDefinitions="240,*,Auto">
         <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center" Margin="20,0,0,0">
-          <TextBlock Text="▣" FontSize="22" Foreground="#796144" VerticalAlignment="Center" />
-          <TextBlock Text="P A P E R L I K E" FontSize="12" FontWeight="SemiBold" Foreground="#4D473D" VerticalAlignment="Center" />
+          <TextBlock Text="▣" FontSize="22" Foreground="{DynamicResource AccentBrush}" VerticalAlignment="Center" />
+          <TextBlock Text="P A P E R L I K E" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource TextBrush}" VerticalAlignment="Center" />
         </StackPanel>
         <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
-          <TextBlock x:Name="BookTitle" Text="Your reading room" FontSize="14" FontWeight="SemiBold" Foreground="#413D35" />
-          <TextBlock x:Name="BookAuthor" FontSize="11" Foreground="#777269" />
+          <TextBlock x:Name="BookTitle" Text="Your reading room" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource TextBrush}" />
+          <TextBlock x:Name="BookAuthor" FontSize="11" Foreground="{DynamicResource MutedBrush}" />
         </StackPanel>
-        <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center" Margin="0,0,24,0">
-          <ComboBox x:Name="ThemePicker" Width="105" SelectedIndex="0" SelectionChanged="ThemePicker_OnSelectionChanged" VerticalAlignment="Center">
-            <ComboBoxItem Content="Paper" />
-            <ComboBoxItem Content="Ivory" />
-            <ComboBoxItem Content="Night" />
+        <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center" Margin="0,0,20,0">
+          <ComboBox x:Name="ThemePicker" Width="100" SelectedIndex="0" SelectionChanged="ThemePicker_OnSelectionChanged">
+            <ComboBoxItem Content="Paper" /><ComboBoxItem Content="Ivory" /><ComboBoxItem Content="Night" />
+          </ComboBox>
+          <ComboBox x:Name="FontPicker" Width="140" SelectionChanged="FontPicker_OnSelectionChanged" ToolTip.Tip="Reading font">
+            <ComboBoxItem Content="Georgia" /><ComboBoxItem Content="Inter" /><ComboBoxItem Content="Verdana" /><ComboBoxItem Content="Atkinson" />
           </ComboBox>
           <Button Content="A−" ToolTip.Tip="Smaller text" Click="SmallerText_OnClick" />
-          <TextBlock Text="Aa" Width="25" TextAlignment="Center" VerticalAlignment="Center" Foreground="#5F584D" />
           <Button Content="A+" ToolTip.Tip="Larger text" Click="LargerText_OnClick" />
-          <Button Content="＋ Book" Classes="primaryButton" Click="AddBook_OnClick" />
-          <Button Content="Folder" ToolTip.Tip="Show saved EPUBs in Finder or Explorer" Click="ShowBooks_OnClick" />
+          <Button Content="Books folder" ToolTip.Tip="Show saved books in Finder" Click="ShowBooks_OnClick" />
         </StackPanel>
       </Grid>
     </Border>
 
-    <Border Grid.Row="1" Grid.Column="0" Background="#F6F4EE" BorderBrush="#DEDAD0" BorderThickness="0,0,1,0">
-      <DockPanel Margin="18,20,16,16">
-        <StackPanel DockPanel.Dock="Top" Spacing="14">
-          <Button Content="＋  Add a book" Classes="addBookButton" Click="AddBook_OnClick" />
-          <TextBlock Text="Y O U R   L I B R A R Y" FontSize="10" FontWeight="SemiBold" Foreground="#777269" Margin="2,8,0,0" />
-        </StackPanel>
-        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Spacing="7" Margin="0,12,0,0">
-          <Ellipse Width="7" Height="7" Fill="#899B7D" VerticalAlignment="Center" />
-          <TextBlock Text="Stored on this computer" FontSize="10" Foreground="#777269" />
-        </StackPanel>
-        <ListBox x:Name="LibraryList" Margin="0,10,0,0" Background="Transparent" BorderThickness="0" SelectionChanged="LibraryList_OnSelectionChanged">
-          <ListBox.Styles>
-            <Style Selector="ListBoxItem">
-              <Setter Property="Padding" Value="0" />
-              <Setter Property="Background" Value="Transparent" />
-            </Style>
-            <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
-              <Setter Property="Background" Value="Transparent" />
-            </Style>
-            <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter">
-              <Setter Property="Background" Value="Transparent" />
-            </Style>
-            <Style Selector="ListBoxItem:selected Border#BookCard">
-              <Setter Property="Background" Value="#EEE8D8" />
-              <Setter Property="BorderBrush" Value="#D7D0C1" />
-            </Style>
-          </ListBox.Styles>
+    <Border Grid.Row="1" Grid.Column="0" Background="{DynamicResource WindowBrush}"
+            BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,0,1,0">
+      <Grid Margin="18,20,16,16" RowDefinitions="Auto,Auto,Auto,*">
+        <Button Grid.Row="0" Content="＋  Add a book" Classes="addBookButton" Click="AddBook_OnClick" />
+        <Expander x:Name="LibraryExpander" Grid.Row="1" Header="YOUR LIBRARY" IsExpanded="False"
+                  Foreground="{DynamicResource TextBrush}" Margin="0,12,0,0">
+          <StackPanel Spacing="8">
+            <ListBox x:Name="LibraryList" MaxHeight="230" Background="Transparent" BorderThickness="0" SelectionChanged="LibraryList_OnSelectionChanged">
+              <ListBox.Styles>
+                <Style Selector="ListBoxItem"><Setter Property="Padding" Value="0" /><Setter Property="Background" Value="Transparent" /></Style>
+                <Style Selector="ListBoxItem:selected Border#BookCard"><Setter Property="Background" Value="{DynamicResource SelectedBrush}" /><Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" /></Style>
+              </ListBox.Styles>
+              <ListBox.ItemTemplate>
+                <DataTemplate x:DataType="local:LibraryEntry">
+                  <Border x:Name="BookCard" Padding="10" CornerRadius="8" Background="{DynamicResource CardBrush}" Margin="0,0,0,6">
+                    <StackPanel Spacing="4">
+                      <TextBlock Text="{Binding Title}" FontSize="13" FontWeight="SemiBold" TextWrapping="Wrap" Foreground="{DynamicResource TextBrush}" />
+                      <TextBlock Text="{Binding Author}" FontSize="11" Foreground="{DynamicResource MutedBrush}" TextTrimming="CharacterEllipsis" />
+                      <TextBlock Text="{Binding ProgressLabel}" FontSize="10" Foreground="{DynamicResource MutedBrush}" />
+                    </StackPanel>
+                  </Border>
+                </DataTemplate>
+              </ListBox.ItemTemplate>
+            </ListBox>
+            <Button x:Name="RemoveBookButton" Content="Remove selected book" Click="RemoveBook_OnClick"
+                    ToolTip.Tip="Move the imported copy to Removed Books; your original stays in place" />
+          </StackPanel>
+        </Expander>
+        <TextBlock Grid.Row="2" Text="C H A P T E R S" FontSize="10" FontWeight="SemiBold"
+                   Foreground="{DynamicResource MutedBrush}" Margin="2,18,0,8" />
+        <ListBox x:Name="ChapterList" Grid.Row="3" SelectionChanged="ChapterList_OnSelectionChanged"
+                 Background="Transparent" BorderThickness="0">
           <ListBox.ItemTemplate>
-            <DataTemplate x:DataType="local:LibraryEntry">
-              <Border x:Name="BookCard" Padding="10" CornerRadius="8" Background="#FFFFFF" Margin="0,0,0,6">
-                <StackPanel Spacing="4">
-                  <TextBlock Text="{Binding Title}" FontSize="13" FontWeight="SemiBold" TextWrapping="Wrap" Foreground="#332F29" />
-                  <TextBlock Text="{Binding Author}" FontSize="11" Foreground="#777269" TextTrimming="CharacterEllipsis" />
-                  <TextBlock Text="{Binding ProgressLabel}" FontSize="10" Foreground="#777269" />
-                </StackPanel>
-              </Border>
+            <DataTemplate x:DataType="local:ReaderSection">
+              <TextBlock Text="{Binding Title}" TextWrapping="Wrap" FontSize="12" Margin="6,4" Foreground="{DynamicResource TextBrush}" />
             </DataTemplate>
           </ListBox.ItemTemplate>
         </ListBox>
-      </DockPanel>
+      </Grid>
     </Border>
 
-    <Grid Grid.Row="1" Grid.Column="1" RowDefinitions="*,50" Background="#E3E0D9">
-      <Grid Grid.Row="0" Margin="42,24,42,22">
+    <Grid Grid.Row="1" Grid.Column="1" RowDefinitions="*,50" Background="{DynamicResource SurfaceBrush}">
+      <Grid Grid.Row="0" Margin="32,24,32,20">
         <StackPanel x:Name="WelcomePanel" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="17" Width="500">
-          <Border Width="64" Height="82" CornerRadius="5" Background="#EEE8D8" BorderBrush="#D7D0C1" BorderThickness="1" HorizontalAlignment="Center">
-            <TextBlock Text="⌁" FontSize="26" Foreground="#80745F" HorizontalAlignment="Center" VerticalAlignment="Center" />
+          <Border Width="64" Height="82" CornerRadius="5" Background="{DynamicResource SelectedBrush}"
+                  BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" HorizontalAlignment="Center">
+            <TextBlock Text="⌁" FontSize="26" Foreground="{DynamicResource MutedBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" />
           </Border>
-          <TextBlock Text="A little more like paper." FontFamily="Georgia" FontSize="25" Foreground="#48443B" HorizontalAlignment="Center" />
-          <TextBlock Text="Bring a book into your reading room and settle in." FontSize="13" Foreground="#777269" HorizontalAlignment="Center" />
-          <Button Content="Choose an EPUB" Classes="primaryButton" HorizontalAlignment="Center" Click="AddBook_OnClick" />
-          <TextBlock Text="Your files stay on this computer." FontSize="11" Foreground="#777269" HorizontalAlignment="Center" />
+          <TextBlock Text="A little more like paper." FontFamily="Georgia" FontSize="25" Foreground="{DynamicResource TextBrush}" HorizontalAlignment="Center" />
+          <TextBlock Text="Bring a book into your reading room and settle in." FontSize="13" Foreground="{DynamicResource MutedBrush}" HorizontalAlignment="Center" />
+          <TextBlock Text="Your files stay on this computer." FontSize="11" Foreground="{DynamicResource MutedBrush}" HorizontalAlignment="Center" />
         </StackPanel>
 
-        <Grid x:Name="ReaderPanel" IsVisible="False" RowDefinitions="Auto,*">
-          <Grid Grid.Row="0" ColumnDefinitions="*,240" Margin="12,0,0,8">
-            <TextBlock x:Name="ChapterHeading" Grid.Column="0" FontSize="10" FontWeight="SemiBold" Foreground="#81796D" VerticalAlignment="Center" />
-            <ComboBox x:Name="ChapterPicker" Grid.Column="1" SelectionChanged="ChapterPicker_OnSelectionChanged" ToolTip.Tip="Go to a chapter">
-              <ComboBox.ItemTemplate>
-                <DataTemplate x:DataType="local:EpubChapter">
-                  <TextBlock Text="{Binding Title}" TextTrimming="CharacterEllipsis" />
-                </DataTemplate>
-              </ComboBox.ItemTemplate>
-            </ComboBox>
-          </Grid>
-          <Border x:Name="PageSurface" Grid.Row="1" Background="#F0E9D7" CornerRadius="3" Padding="54,44">
-            <ScrollViewer x:Name="ChapterScroll" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" ScrollChanged="ChapterScroll_OnScrollChanged">
-              <TextBlock x:Name="ChapterText" FontFamily="Georgia" FontSize="19" LineHeight="34" TextWrapping="Wrap" Foreground="#332F29" MaxWidth="660" HorizontalAlignment="Center" />
+        <Grid x:Name="ReaderPanel" IsVisible="False" RowDefinitions="Auto,Auto,*">
+          <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="8" Margin="10,0,0,8">
+            <TextBlock x:Name="ChapterHeading" FontSize="10" FontWeight="SemiBold" Foreground="{DynamicResource MutedBrush}"
+                       VerticalAlignment="Center" MaxWidth="160" TextTrimming="CharacterEllipsis" />
+            <TextBox x:Name="SearchBox" Width="195" PlaceholderText="Search this book" KeyDown="SearchBox_OnKeyDown" />
+            <Button Content="Search" Click="Search_OnClick" />
+            <Button x:Name="AddBookmarkButton" Content="Bookmark" Click="AddBookmark_OnClick" />
+            <ComboBox x:Name="BookmarkPicker" Width="145" SelectionChanged="BookmarkPicker_OnSelectionChanged"
+                      ToolTip.Tip="Saved places" />
+            <Button x:Name="RemoveBookmarkButton" Content="Remove" Click="RemoveBookmark_OnClick" ToolTip.Tip="Remove selected bookmark" />
+          </StackPanel>
+          <Border x:Name="SearchResultsPanel" Grid.Row="1" IsVisible="False" Margin="10,0,10,8"
+                  Background="{DynamicResource CardBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="5">
+            <DockPanel>
+              <Button DockPanel.Dock="Top" Content="Close search results" HorizontalAlignment="Right" Click="CloseSearchResults_OnClick" />
+              <ListBox x:Name="SearchResultsList" MaxHeight="160" SelectionChanged="SearchResultsList_OnSelectionChanged" />
+            </DockPanel>
+          </Border>
+          <Border x:Name="PageSurface" Grid.Row="2" Background="{DynamicResource PageBrush}" CornerRadius="3" Padding="46,40">
+            <ScrollViewer x:Name="ChapterScroll" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto"
+                          ScrollChanged="ChapterScroll_OnScrollChanged" SizeChanged="ChapterScroll_OnSizeChanged">
+              <Grid>
+                <TextBlock x:Name="ChapterText" FontFamily="Georgia" FontSize="19" LineHeight="34" TextWrapping="Wrap"
+                           Foreground="{DynamicResource TextBrush}" MaxWidth="660" HorizontalAlignment="Center" />
+                <Image x:Name="PdfPageImage" IsVisible="False" MaxWidth="850" Stretch="Uniform" HorizontalAlignment="Center" />
+                <TextBlock x:Name="PdfLoading" Text="Loading page…" IsVisible="False" HorizontalAlignment="Center"
+                           VerticalAlignment="Center" Foreground="{DynamicResource MutedBrush}" />
+              </Grid>
             </ScrollViewer>
           </Border>
         </Grid>
       </Grid>
-
-      <Grid Grid.Row="1" ColumnDefinitions="*,Auto,*,Auto,*" Margin="30,0">
+      <Grid Grid.Row="1" ColumnDefinitions="*,Auto,Auto,*" Margin="30,0">
         <Button x:Name="PreviousButton" Grid.Column="0" Content="‹  Previous" HorizontalAlignment="Left" Click="Previous_OnClick" />
-        <TextBlock x:Name="ProgressText" Grid.Column="2" Text="A quiet place for your next chapter" FontSize="11" Foreground="#777269" HorizontalAlignment="Center" VerticalAlignment="Center" />
-        <Button x:Name="NextButton" Grid.Column="4" Content="Next  ›" HorizontalAlignment="Right" Click="Next_OnClick" />
+        <TextBlock x:Name="ProgressText" Grid.Column="1" Text="A quiet place for your next page" FontSize="11"
+                   Foreground="{DynamicResource MutedBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="12,0" />
+        <StackPanel x:Name="PdfPageJump" Grid.Column="2" IsVisible="False" Orientation="Horizontal" Spacing="4" VerticalAlignment="Center">
+          <TextBox x:Name="PageJumpBox" Width="54" PlaceholderText="Page" KeyDown="PageJumpBox_OnKeyDown" />
+          <Button Content="Go" Click="PageJump_OnClick" />
+        </StackPanel>
+        <Button x:Name="NextButton" Grid.Column="3" Content="Next  ›" HorizontalAlignment="Right" Click="Next_OnClick" />
       </Grid>
     </Grid>
   </Grid>

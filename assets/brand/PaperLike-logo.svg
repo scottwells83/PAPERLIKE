@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="260" viewBox="0 0 1000 260">
+  <rect x="8" y="8" width="244" height="244" rx="56" fill="#536653"/>
+  <text x="130" y="178" fill="#FFF8EB" font-family="Georgia, Baskerville, serif" font-size="122" font-weight="700" letter-spacing="6" text-anchor="middle">PL</text>
+  <text x="304" y="167" fill="#46382F" font-family="Georgia, Baskerville, serif" font-size="100" font-weight="500">Paper<tspan font-weight="700">Like</tspan></text>
+  <path d="M310 202h430" fill="none" stroke="#9B9A78" stroke-width="7" stroke-linecap="round"/>
+</svg>

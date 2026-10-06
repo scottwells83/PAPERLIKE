@@ -3,6 +3,7 @@
     <OutputType>WinExe</OutputType>
     <AssemblyName>PaperLike</AssemblyName>
     <TargetFramework>net10.0</TargetFramework>
+    <ApplicationIcon>assets/brand/PaperLike.ico</ApplicationIcon>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <ApplicationManifest>app.manifest</ApplicationManifest>

@@ -12,6 +12,7 @@ DOTNET="$(command -v dotnet || true)"
 if [[ -z "$DOTNET" && -x "$ROOT/../work/dotnet/dotnet" ]]; then DOTNET="$ROOT/../work/dotnet/dotnet"; fi
 if [[ -z "$DOTNET" ]]; then echo "Install the .NET 10 SDK first." >&2; exit 1; fi
 "$DOTNET" publish "$ROOT/PaperLike.csproj" -c Release -r "$RID" --self-contained true -p:UseAppHost=true -o "$APP/Contents/MacOS"
+cp "$ROOT/assets/brand/PaperLike.icns" "$APP/Contents/Resources/PaperLike.icns"
 cat > "$APP/Contents/Info.plist" <<'PLIST'
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -25,6 +26,7 @@ cat > "$APP/Contents/Info.plist" <<'PLIST'
 <key>LSMinimumSystemVersion</key><string>14.0</string>
 <key>NSHighResolutionCapable</key><true/>
 <key>CFBundleExecutable</key><string>PaperLike</string>
+<key>CFBundleIconFile</key><string>PaperLike.icns</string>
 </dict></plist>
 PLIST
 cat > "$STAGE/Install PaperLike.command" <<'INSTALL'

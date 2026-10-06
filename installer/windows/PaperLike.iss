@@ -15,6 +15,7 @@ OutputDir=..\..\artifacts\windows
 OutputBaseFilename=PaperLike-Setup-x64
 ArchitecturesInstallIn64BitMode=x64
 ArchitecturesAllowed=x64
+SetupIconFile=..\..\assets\brand\PaperLike.ico
 UninstallDisplayIcon={app}\{#AppExeName}
 Compression=lzma2
 SolidCompression=yes

@@ -1,0 +1,62 @@
+name: Build installers
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 10.0.x
+      - name: Publish Windows app
+        run: dotnet publish PaperLike.csproj -c Release -r win-x64 --self-contained true -p:UseAppHost=true -o artifacts/windows/publish
+      - name: Install Inno Setup
+        run: choco install innosetup --yes --no-progress
+      - name: Build Windows installer
+        run: '& "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" installer/windows/PaperLike.iss'
+      - uses: actions/upload-artifact@v7
+        with:
+          name: paperlike-windows-x64
+          path: artifacts/windows/PaperLike-Setup-x64.exe
+
+  macos:
+    runs-on: macos-14
+    strategy:
+      fail-fast: false
+      matrix:
+        rid: [osx-arm64, osx-x64]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 10.0.x
+      - name: Package macOS app
+        run: ./scripts/package-macos.sh ${{ matrix.rid }}
+      - uses: actions/upload-artifact@v7
+        with:
+          name: paperlike-${{ matrix.rid }}
+          path: artifacts/macos/${{ matrix.rid }}/PaperLike-macOS-${{ matrix.rid }}.dmg
+
+  attach-to-release:
+    if: github.event_name == 'release'
+    needs: [windows, macos]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          path: release-assets
+          pattern: paperlike-*
+          merge-multiple: true
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "$GITHUB_REF_NAME" release-assets/* --clobber
